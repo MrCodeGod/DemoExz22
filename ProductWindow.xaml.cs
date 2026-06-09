@@ -50,12 +50,12 @@ namespace DemoExz22
         private void LoadUI()
         {
             Users user = CurrentSession.CurrentUser;
-            if (user == null || user.RoleID == 3)
+
+            AdminPanel.Visibility = Visibility.Collapsed;
+
+            if (user != null && user.RoleID == 1)
             {
-                AdminPanel.Visibility = Visibility.Collapsed;
-            }
-            else if (user.RoleID == 1)
-            {
+                AdminPanel.Visibility = Visibility.Visible;
                 CreateButton.Visibility = Visibility.Visible;
             }
         }
@@ -176,17 +176,68 @@ namespace DemoExz22
         private void Border_MouseDown(object sender, MouseButtonEventArgs e)
         {
             Users user = CurrentSession.CurrentUser;
-            if (user.RoleID != 1)
+
+            if (user == null || user.RoleID != 1)
             {
                 return;
             }
-            else
-            {
-                int id = (int)(sender as Border).Tag;
 
-                new AddEditProductWindow(id).Show();
-                Close();
+            Border border = sender as Border;
+
+            if (border == null)
+                return;
+
+            int productId = (int)border.Tag;
+
+            new AddEditProductWindow(productId).Show();
+
+            Close();
+        }
+
+        private void DeleteProduct(int productId)
+        {
+            Product product = db.Product.Find(productId);
+
+            if (product == null)
+            {
+                messageHelper.ShowError("Товар не найден.");
+                return;
             }
+
+            bool productInOrder = db.ProductInOrder
+                .Any(p => p.ProductID == productId);
+
+            if (productInOrder)
+            {
+                messageHelper.ShowError(
+                    "Нельзя удалить товар, который присутствует в заказе.");
+                return;
+            }
+
+            MessageBoxResult result = MessageBox.Show(
+                "Вы действительно хотите удалить товар?",
+                "Подтверждение удаления",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Question);
+
+            if (result != MessageBoxResult.Yes)
+                return;
+
+            db.Product.Remove(product);
+            db.SaveChanges();
+
+            messageHelper.ShowInfo("Товар удалён.");
+
+            ApplyFilters();
+        }
+
+        private void DeleteButton_Click(object sender, RoutedEventArgs e)
+        {
+            Button button = sender as Button;
+
+            int productId = (int)button.Tag;
+
+            DeleteProduct(productId);
         }
     }
 }

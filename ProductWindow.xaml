@@ -90,6 +90,7 @@
                                     <StackPanel>
                                         <TextBlock Text="Discount: "/>
                                         <TextBlock Text="{Binding Discount, StringFormat={}{0}%}"/>
+                                        <Button Content="Удалить" Name="DeleteButton" Margin="0,10,0,0" Tag="{Binding ID}" Click="DeleteButton_Click" Visibility="{Binding AdminButtonsVisibility}"/>
                                     </StackPanel>
                                 </Border>
                             </Grid>

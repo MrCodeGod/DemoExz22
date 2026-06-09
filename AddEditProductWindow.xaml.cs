@@ -129,7 +129,7 @@ namespace DemoExz22
 
             try
             {
-                db.Product.AddOrUpdate(product);
+                db.Product.Add(product);
                 db.SaveChanges();
                 messageHelper.ShowInfo("Данные успешно сохранены.");
                 CancelButton_Click(null, null);
@@ -165,7 +165,6 @@ namespace DemoExz22
 
             try
             {
-                db.Product.AddOrUpdate(product);
                 db.SaveChanges();
                 messageHelper.ShowInfo("Данные успешно изменены.");
                 CancelButton_Click(null, null);

@@ -1,7 +1,9 @@
 ﻿using DemoExz22.DataBase;
+using DemoExz22.Statics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows;
 using System.Windows.Media;
 
 namespace DemoExz22.ViewModels
@@ -27,6 +29,11 @@ namespace DemoExz22.ViewModels
             GetPhoto();
             GetPrice();
 
+            AdminButtonsVisibility =
+            CurrentSession.CurrentUser != null && CurrentSession.CurrentUser.RoleID == 1
+            ? Visibility.Visible
+            : Visibility.Collapsed;
+
         }
 
         public int ID { get; set; }
@@ -43,6 +50,7 @@ namespace DemoExz22.ViewModels
         public  Supplier Supplier { get; set; }
         public  Unit Unit { get; set; }
         public Brush Background { get; set; }
+        public Visibility AdminButtonsVisibility { get; set; }
 
         private void GetBackground()
         {
@@ -65,7 +73,7 @@ namespace DemoExz22.ViewModels
 
         private void GetPhoto()
         {
-            if (!string.IsNullOrEmpty(Photo) || Photo != "")
+            if (!string.IsNullOrEmpty(Photo))
             {
                 return;
             }
